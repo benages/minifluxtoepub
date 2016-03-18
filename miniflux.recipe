@@ -10,7 +10,6 @@ class AdvancedUserRecipe1458333302(BasicNewsRecipe):
     description = 'Miniflux unread items'
     needs_subscription = True
     DATA = '{"jsonrpc": "2.0", "method": "item.list_unread", "id":1}'
-    use_embedded_content  = True
 
     def parse_index(self):
         articles = {}
