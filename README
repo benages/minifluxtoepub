@@ -1,2 +1,3 @@
-Simple program to download your unread items from miniflux.
-Uses ebook-convert from calibre
+Calibre recipe to make an ebook from your miniflux unread items.
+
+You need to change appURL from 'https://demo.miniflux.net/jsonrpc.php' to the url of your miniflux instance.
