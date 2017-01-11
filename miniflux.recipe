@@ -9,7 +9,7 @@ class AdvancedUserRecipe1458333302(BasicNewsRecipe):
     __author__  = 'Juanjo Benages'
     description = 'Miniflux unread items'
     needs_subscription = True
-    DATA = '{"jsonrpc": "2.0", "method": "item.list_unread", "id":1}'
+    DATA = '{"jsonrpc": "2.0", "method": "getItems", "id":1, "params": {"limit":12600}}'
     use_embedded_content  = True
 
     def parse_index(self):
@@ -21,9 +21,10 @@ class AdvancedUserRecipe1458333302(BasicNewsRecipe):
         j = r.json()
 
         for archivo in j['result']:
-            feed = 'Uncategorized'
-            if feed not in articles:
-                articles[feed] = []
-            articles[feed].append(dict(title=archivo['title'], url=archivo['url'],content=archivo['content']))
+            if archivo['status'] == 'unread':
+                feed = 'Uncategorized'
+                if feed not in articles:
+                    articles[feed] = []
+                articles[feed].append(dict(title=archivo['title'], url=archivo['url'],content=archivo['content']))
         ans = [(keyl, articles[keyl]) for keyl in articles.keys()]
         return ans
