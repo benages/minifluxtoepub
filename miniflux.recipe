@@ -32,10 +32,11 @@ class AdvancedUserRecipe1458333302(BasicNewsRecipe):
             ba = r.json()
             bar = ba['items'][0]['url']
             title = ba['items'][0]['title']
+            content = ba['items'][0]['html']
             feed = 'Uncategorized'
             if feed not in articles:
                 articles[feed] = []
-            articles[feed].append(dict(title=title, url=bar))
+            articles[feed].append(dict(title=title, url=bar, content=content))
 
         ans = [(keyl, articles[keyl]) for keyl in articles.keys()]
         return ans
