@@ -2,29 +2,40 @@
 # vim:fileencoding=utf-8
 from calibre.web.feeds.news import BasicNewsRecipe
 import requests
+import hashlib
 
 class AdvancedUserRecipe1458333302(BasicNewsRecipe):
     title          = 'Miniflux'
-    appURL      = 'https://demo.miniflux.net/jsonrpc.php'
+    appURL      = 'https://demo.miniflux.net/fever/?api&unread_item_ids'
     __author__  = 'Juanjo Benages'
-    description = 'Miniflux unread items'
+    description = 'Miniflux unread items using the fever api'
     needs_subscription = True
-    DATA = '{"jsonrpc": "2.0", "method": "getItems", "id":1, "params": {"limit":12600}}'
     use_embedded_content  = True
 
     def parse_index(self):
         articles = {}
         ans = []
 
-        AUTH = (self.username,self.password)
-        r = requests.post(self.appURL, data = self.DATA, auth=AUTH)
-        j = r.json()
+        akey = ('%s:%s' % (self.username, self.password)).encode('utf-8')
+        apikey = hashlib.md5(akey)
+        apikey = apikey.hexdigest()
+        adata = "api_key=%s" % apikey
 
-        for archivo in j['result']:
-            if archivo['status'] == 'unread':
-                feed = 'Uncategorized'
-                if feed not in articles:
-                    articles[feed] = []
-                articles[feed].append(dict(title=archivo['title'], url=archivo['url'],content=archivo['content']))
+        r = requests.post(self.appURL, data=adata)
+        lista = r.json()
+        a = lista['unread_item_ids']
+        b = a.split(',')
+
+        for unread in b:
+            URL = 'https://miniflux.benages.eu/fever/?api&items&with_ids=%s' % (unread)
+            r = requests.post(URL, data=adata)
+            ba = r.json()
+            bar = ba['items'][0]['url']
+            title = ba['items'][0]['title']
+            feed = 'Uncategorized'
+            if feed not in articles:
+                articles[feed] = []
+            articles[feed].append(dict(title=title, url=bar))
+
         ans = [(keyl, articles[keyl]) for keyl in articles.keys()]
         return ans
