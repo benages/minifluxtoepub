@@ -27,7 +27,7 @@ class AdvancedUserRecipe1458333302(BasicNewsRecipe):
         b = a.split(',')
 
         for unread in b:
-            URL = 'https://miniflux.benages.eu/fever/?api&items&with_ids=%s' % (unread)
+            URL = 'https://demo.miniflux.net/fever/?api&items&with_ids=%s' % (unread)
             r = requests.post(URL, data=adata)
             ba = r.json()
             bar = ba['items'][0]['url']
